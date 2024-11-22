@@ -4,7 +4,7 @@ interface IThought extends Document {
     thoughtText: string,
     ceratedAt: Date;
     username: string,
-    reactions: [IReaction]
+    reactions?: [IReaction]
 }
 
 interface IReaction extends Document {
@@ -59,7 +59,7 @@ const thoughtSchema = new Schema<IThought>(
 );
 
 thoughtSchema.virtual('reactionCount').get(function () {
-    return this.reactions.length;
+    return this.reactions?.length;
 })
 
 const Thought = model('Thought', thoughtSchema);
