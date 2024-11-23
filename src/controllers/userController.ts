@@ -48,7 +48,7 @@ export const updateUser = async (req: Request, res: Response) => {
         const user = await User.findOneAndUpdate(
             { _id: req.params.userId },
             { $set: req.body },
-            { runValidators: true, new: true}
+            { runValidators: true, new: true }
         );
 
         if (user) {
@@ -72,6 +72,41 @@ export const deleteUser = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "No user found" });
         }
     } catch (err) {
+        return res.status(500).json(err);
+    }
+}
+
+export const addFriend = async (req: Request, res: Response) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        const friend = await User.findById(req.params.friendId);
+        let message = '';
+
+        if (!user) {
+            message = "No user found ";
+            console.log("no user found");
+
+            if (!friend) {
+                message.concat("No friend found");
+                console.log('no friend found')
+            }
+            return res.json({ message: message });
+            // @ts-expect-error: friend._id could be null, but we've arealdy dealt with not finding a matching user
+        } else if (user._id == friend._id) {
+            return res.json({ message: "Friend and User are the same - operation aborted" });
+            // @ts-expect-error: friend._id could be null, but we've arealdy dealt with not finding a matching user
+        } else if (user.friends?.includes(friend._id)) {
+            return res.json({ message: "Friend already exists on friends list" });
+        } else {
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: req.params.userId },
+                { $addToSet: { friends: req.params.friendId } },
+                { runValidators: true, new: true }
+            );
+            return res.json(updatedUser);
+        }
+    } catch (err) {
+        console.log('CATCH!');
         return res.status(500).json(err);
     }
 }
