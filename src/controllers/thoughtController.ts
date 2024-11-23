@@ -33,14 +33,61 @@ export const getAllThoughts = async (_req: Request, res: Response) => {
     }
 }
 
+export const getSingleThought = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findById(req.params.thoughtId);
+        if (thought) {
+            res.json({ thought });
+        } else {
+            res.status(404).json({ message: "Thought not found" });
+        }
+    } catch (error: any) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+}
+
 export const deleteThought = async (req: Request, res: Response) => {
     try {
-        const thought = await User.findOneAndDelete({ _id: req.params.thoughtId });
+        const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
 
         if (thought) {
             return res.json({ message: "Thought deleted" });
         } else {
             return res.status(404).json({ message: "No thought found" });
+        }
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+}
+
+export const createReaction = async (req: Request, res: Response) => {
+    try {
+        const thought = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: { reactions: req.body }},
+            { runValidators: true, new: true }
+        );
+
+        if (!thought) {
+            return res.status(404).json({ message: "No though found matching ID"});
+        } else {
+            return res.json(thought);
+        }
+
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+}
+
+export const deleteReaction = async (req: Request, res: Response) => {
+    try {
+        const reaction = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $pull: { reactions: { reactionId: req.params.reactionId }}}, { runValidators: true, new: true });
+        if (reaction) {
+            return res.json(reaction);
+        } else {
+            return res.status(404).json({ message: "Reaction not found"});
         }
     } catch (err) {
         return res.status(500).json(err);

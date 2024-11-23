@@ -3,13 +3,26 @@ const router = Router();
 import {
     createThought,
     deleteThought,
-    getAllThoughts
+    getAllThoughts,
+    getSingleThought,
+    createReaction,
+    deleteReaction
 } from '../../controllers/thoughtController.js';
 
-router.route('/').get(getAllThoughts).post(createThought);
+// /api/thoughts
 
-router.route('/:thoughtID')
-.delete(deleteThought);
+router.route('/')
+    .get(getAllThoughts)
+    .post(createThought);
 
+router.route('/:thoughtId')
+    .delete(deleteThought)
+    .get(getSingleThought);
+
+router.route('/:thoughtId/reactions')
+    .post(createReaction);
+
+router.route('/:thoughtId/reactions/:reactionId')
+    .delete(deleteReaction);
 
 export { router as thoughtRouter };
