@@ -7,6 +7,8 @@ A straightfoward project in Javascript using MongoDB for the backend.
 
 ![thoguhtsexperiment_short(1)](https://github.com/user-attachments/assets/705bd6ec-9c86-41c2-a171-ffd53138e39d)
 
+[Long Video](https://drive.google.com/file/d/1lYprlVtkEzKnqX8egRHF-KeSv7i2OgRj/view?usp=sharing)
+
 ### Requirements
 
 You will need to [install MongoDB](https://www.mongodb.com/docs/manual/installation/) and have an environment set up to run Javascript applications.
